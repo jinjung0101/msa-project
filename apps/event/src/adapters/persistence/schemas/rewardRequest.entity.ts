@@ -9,10 +9,14 @@ export class RewardRequestEntity {
   @Prop({ type: Types.ObjectId, required: true, index: true })
   eventId!: Types.ObjectId;
 
-  @Prop({ enum: ["pending", "approved", "rejected"], default: "pending" })
+  @Prop({
+    enum: ["pending", "approved", "rejected"],
+    default: "pending",
+    index: true,
+  })
   status!: string;
 
-  @Prop()
+  @Prop({ expires: 60 * 60 * 24 * 30 })
   processedAt?: Date;
 }
 
