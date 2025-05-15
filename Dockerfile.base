@@ -1,0 +1,10 @@
+# Dockerfile.base
+FROM node:18-alpine AS base
+
+WORKDIR /monorepo
+
+# 1) 공통 툴 설치
+RUN npm install -g pnpm@latest typescript
+
+# 2) 루트 설정 파일 복사
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml tsconfig.base.json tsconfig.json ./

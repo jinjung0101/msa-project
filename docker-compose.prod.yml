@@ -1,0 +1,26 @@
+version: "3.8"
+services:
+  gateway:
+    deploy:
+      restart_policy:
+        condition: on-failure
+      resources:
+        limits:
+          memory: 512M
+    environment:
+      - NODE_ENV=production
+
+  auth:
+    deploy:
+      restart_policy:
+        condition: on-failure
+    environment:
+      - NODE_ENV=production
+
+  event:
+    deploy:
+      restart_policy:
+        condition: on-failure
+    environment:
+      - NODE_ENV=production
+# mongo, volumes 등은 기본 파일을 그대로 사용함.

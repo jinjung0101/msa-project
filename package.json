@@ -1,0 +1,40 @@
+{
+  "name": "my-msa-project",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:gateway": "tsc -b apps/gateway",
+    "start:gateway": "node dist/gateway/main.js",
+    "build:auth": "tsc -b apps/auth",
+    "start:auth": "node dist/auth/main.js",
+    "build:event": "tsc -b apps/event",
+    "start:event": "node dist/event/main.js",
+    "build:share": "tsc -b packages/share",
+    "build": "pnpm run build:share && pnpm run build:gateway && pnpm run build:auth && pnpm run build:event",
+    "dev:gateway": "ts-node-dev --respawn --transpile-only --project tsconfig.base.json -r tsconfig-paths/register apps/gateway/src/main.ts",
+    "dev:auth": "ts-node-dev --respawn --transpile-only --project tsconfig.base.json -r tsconfig-paths/register apps/auth/src/main.ts",
+    "dev:event": "ts-node-dev --respawn --transpile-only --project tsconfig.base.json -r tsconfig-paths/register apps/event/src/main.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@nestjs/cli": "^11.0.7",
+    "@types/node": "^22.15.18",
+    "eslint": "^9.26.0",
+    "prettier": "^3.5.3",
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "@nestjs/common": "^11.1.0",
+    "@nestjs/core": "^11.1.0",
+    "@nestjs/platform-express": "^11.1.0",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.2"
+  }
+}

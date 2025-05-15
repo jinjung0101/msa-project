@@ -1,0 +1,11 @@
+version: "3.8"
+services:
+  auth:
+    volumes:
+      - ./apps/auth/src:/monorepo/apps/auth/src:cached
+  gateway:
+    volumes:
+      - ./apps/gateway/src:/monorepo/apps/gateway/src:cached
+  event:
+    volumes:
+      - ./apps/event/src:/monorepo/apps/event/src:cached

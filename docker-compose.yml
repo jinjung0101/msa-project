@@ -1,0 +1,48 @@
+version: "3.8"
+services:
+  auth:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: auth-runtime
+    ports:
+      - "3001:3001"
+    environment:
+      - PORT=3001
+    depends_on:
+      - mongo
+
+  event:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: event-runtime
+    ports:
+      - "3002:3002"
+    environment:
+      - PORT=3002
+    depends_on:
+      - mongo
+
+  gateway:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: gateway-runtime
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+    depends_on:
+      - auth
+      - event
+
+  mongo:
+    image: mongo:6
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:
