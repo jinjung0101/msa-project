@@ -1,0 +1,15 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "composite": true,
+    "incremental": true,
+    "tsBuildInfoFile": "dist/root.tsbuildinfo"
+  },
+  "references": [
+    { "path": "packages/share" },
+    { "path": "packages/infrastructure" },
+    { "path": "apps/auth" },
+    { "path": "apps/event" },
+    { "path": "apps/gateway" }
+  ]
+}

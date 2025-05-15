@@ -3,7 +3,8 @@
     "baseUrl": ".",
     "paths": {
       "@my-msa-project/share": ["packages/share/src/index.ts"],
-      "@my-msa-project/share/*": ["packages/share/src/*"]
+      "@my-msa-project/share/*": ["packages/share/src/*"],
+      "infrastructure/*": ["packages/infrastructure/src/*"]
     },
     "composite": true,
     "declaration": true,
@@ -16,8 +17,14 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
+    "emitDecoratorMetadata": true,
+    "tsBuildInfoFile": "dist/root.tsbuildinfo"
   },
+  "references": [
+    { "path": "apps/auth" },
+    { "path": "apps/event" },
+    { "path": "apps/gateway" }
+  ],
   "exclude": ["node_modules", "dist", "packages/**/dist", "apps/**/dist"],
   "include": ["apps/**/*", "packages/**/*"]
 }

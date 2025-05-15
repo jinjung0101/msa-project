@@ -1,0 +1,19 @@
+{
+  "name": "@my-msa-project/event",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.app.json"
+  },
+  "dependencies": {
+    "@nestjs/common": "^11",
+    "@nestjs/core": "^11",
+    "@nestjs/mongoose": "^11.0.3",
+    "@nestjs/platform-express": "^11",
+    "mongoose": "^8.14.3"
+  },
+  "devDependencies": {
+    "@types/mongoose": "^5.11.97"
+  }
+}

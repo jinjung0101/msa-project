@@ -1,10 +1,15 @@
 {
   "extends": "../../tsconfig.base.json",
+  "references": [
+    { "path": "../../packages/share" },
+    { "path": "../../packages/infrastructure" }
+  ],
   "compilerOptions": {
     "composite": true,
     "outDir": "../../dist/event",
     "rootDir": "src",
-    "strict": true
+    "strict": true,
+    "tsBuildInfoFile": "../../dist/auth/tsconfig.tsbuildinfo"
   },
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules", "dist", "test", "**/*.spec.ts"]

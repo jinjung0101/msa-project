@@ -1,0 +1,30 @@
+node_modules/
+dist/                
+**/dist/             
+coverage/           
+*.tsbuildinfo        
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# --- Map & Declaration 파일 ---
+*.js.map
+*.d.ts.map
+# (d.ts 자체도 배포용이 아니라면 *.d.ts 추가)
+
+# --- IDE / OS ---
+.vscode/
+.idea/
+.DS_Store
+
+# --- 환경 변수 ---
+.env
+.env.*               # .env.local, .env.test 등
+
+# --- Turborepo 캐시 ---
+.turbo/
+
+# --- 기타 작업 특성 ---
+# 빌드 단계에서만 생성되는 upload, report, tmp 등
+tmp/
+uploads/
