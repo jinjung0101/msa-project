@@ -11,11 +11,11 @@ export class UserEntity {
   passwordHash!: string;
 
   @Prop({
-    type: [String],
+    type: String,
     enum: Object.values(UserRole),
-    default: [UserRole.USER],
+    default: UserRole.USER,
   })
-  roles!: string[];
+  role!: UserRole;
 }
 
 export type UserDocument = UserEntity & Document;

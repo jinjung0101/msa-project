@@ -10,7 +10,7 @@ const CouponDetail = z.object({
   expiresAt: z.preprocess((d) => new Date(d as string), z.date()),
 });
 
-export const RewardDefinitionSchema = z.discriminatedUnion("type", [
+export const RewardDefinitionZodSchema = z.discriminatedUnion("type", [
   z.object({
     eventId: z.string().regex(/^[0-9a-fA-F]{24}$/),
     type: z.literal("points"),
@@ -28,4 +28,4 @@ export const RewardDefinitionSchema = z.discriminatedUnion("type", [
   }),
 ]);
 
-export type RewardDefinitionModel = z.infer<typeof RewardDefinitionSchema>;
+export type RewardDefinitionModel = z.infer<typeof RewardDefinitionZodSchema>;

@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const RewardRequestSchema = z.object({
+export const RewardRequestZodSchema = z.object({
   userId: z.string().regex(/^[0-9a-fA-F]{24}$/),
   eventId: z.string().regex(/^[0-9a-fA-F]{24}$/),
   requestedAt: z.preprocess((d) => new Date(d as string), z.date()),
@@ -8,4 +8,4 @@ export const RewardRequestSchema = z.object({
   processedAt: z.preprocess((d) => new Date(d as string), z.date()).optional(),
 });
 
-export type RewardRequestModel = z.infer<typeof RewardRequestSchema>;
+export type RewardRequestModel = z.infer<typeof RewardRequestZodSchema>;
