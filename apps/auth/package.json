@@ -4,7 +4,8 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc -p tsconfig.app.json"
+    "build": "tsc -p tsconfig.app.json",
+    "test": "jest --passWithNoTests --verbose"
   },
   "dependencies": {
     "@nestjs/common": "^11",
@@ -19,6 +20,7 @@
     "passport-jwt": "^4.0.1"
   },
   "devDependencies": {
+    "@nestjs/testing": "^11.1.1",
     "@types/bcrypt": "^5.0.2",
     "@types/mongoose": "^5.11.97",
     "@types/passport-jwt": "^4.0.1"

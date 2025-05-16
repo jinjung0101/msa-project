@@ -2,6 +2,7 @@ import {
   ConflictException,
   Inject,
   Injectable,
+  NotFoundException,
   UnauthorizedException,
 } from "@nestjs/common";
 import {
@@ -63,5 +64,19 @@ export class AuthService {
     const payload = { sub: cred.id, username: cred.username, role: cred.role };
     const accessToken = this.jwtService.sign(payload);
     return { accessToken };
+  }
+
+  /** 사용자 롤 변경(Assign Role) */
+  async assignRole(
+    username: string,
+    role: UserRoleEnum
+  ): Promise<UserResponseDto> {
+    // 1) 존재 확인 (NotFoundException을 던지도록 레포가 처리해 주므로 생략 가능)
+    const existing = await this.userRepo.findByUsername(username);
+    if (!existing)
+      throw new NotFoundException(`사용자(id=${username})를 찾을 수 없습니다`);
+
+    // 2) 업데이트
+    return this.userRepo.updateRole(existing.id, role);
   }
 }

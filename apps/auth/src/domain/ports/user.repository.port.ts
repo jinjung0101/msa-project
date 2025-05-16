@@ -21,4 +21,6 @@ export interface UserRepositoryPort {
   findUserWithHash(
     username: string
   ): Promise<(UserResponseDto & { passwordHash: string }) | null>;
+
+  updateRole(userId: string, role: UserRoleEnum): Promise<UserResponseDto>;
 }

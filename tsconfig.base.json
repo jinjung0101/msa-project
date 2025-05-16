@@ -6,6 +6,7 @@
       "@my-msa-project/share/*": ["packages/share/src/*"],
       "infrastructure/*": ["packages/infrastructure/src/*"]
     },
+    "types": ["node", "jest"],
     "composite": true,
     "declaration": true,
     "declarationMap": true,
