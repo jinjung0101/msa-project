@@ -20,12 +20,3 @@ export class UserEntity {
 
 export type UserDocument = UserEntity & Document;
 export const UserSchema = SchemaFactory.createForClass(UserEntity);
-
-// 응답 직전에 민감 데이터 제거 및 id 변환
-UserSchema.set("toJSON", {
-  transform(doc, ret) {
-    delete ret.passwordHash;
-    ret.id = ret._id.toString();
-    delete ret._id;
-  },
-});

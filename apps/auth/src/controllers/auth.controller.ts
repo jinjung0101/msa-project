@@ -2,6 +2,8 @@ import { Body, Controller, Post } from "@nestjs/common";
 import { AuthService } from "../domain/services/auth.service";
 import { ZodValidationPipe } from "infrastructure/pipes/zod-validation.pipe";
 import {
+  LoginUserDto,
+  LoginUserSchema,
   RegisterUserDto,
   RegisterUserSchema,
   UserResponseDto,
@@ -16,5 +18,12 @@ export class AuthController {
     @Body(new ZodValidationPipe(RegisterUserSchema)) dto: RegisterUserDto
   ): Promise<UserResponseDto> {
     return this.authService.register(dto);
+  }
+
+  @Post("login")
+  login(
+    @Body(new ZodValidationPipe(LoginUserSchema)) dto: LoginUserDto
+  ): Promise<UserResponseDto> {
+    return this.authService.login(dto);
   }
 }
