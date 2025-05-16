@@ -1,11 +1,12 @@
 import { Injectable } from "@nestjs/common";
 import { PassportStrategy } from "@nestjs/passport";
 import { Strategy, ExtractJwt } from "passport-jwt";
-import { UserResponseDto } from "@my-msa-project/share/schemas/auth/user.schema";
 import { ConfigService } from "@nestjs/config";
+import { UserRoleEnum } from "../schemas/auth/user-role.schema";
+import { UserResponseDto } from "../schemas/auth/user.schema";
 
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy) {
+export class SharedJwtStrategy extends PassportStrategy(Strategy, "jwt") {
   constructor(config: ConfigService) {
     const secret = config.get<string>("JWT_SECRET");
     if (!secret) {
@@ -20,12 +21,12 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   async validate(payload: {
     sub: string;
     username: string;
-    role: string;
+    role: UserRoleEnum;
   }): Promise<UserResponseDto> {
     return {
       id: payload.sub,
       username: payload.username,
-      role: payload.role as any,
+      role: payload.role,
     };
   }
 }

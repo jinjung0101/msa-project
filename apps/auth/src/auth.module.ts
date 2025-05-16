@@ -7,7 +7,7 @@ import { USER_REPOSITORY } from "./domain/ports/user.repository.port";
 import { AuthController } from "./controllers/auth.controller";
 import { HASHING_SERVICE } from "./domain/services/hashing.service";
 import { BcryptHashingService } from "./infrastructure/hashing/bcrypt-hashing.service";
-import { JwtStrategy } from "./infrastructure/strategies/jwt.strategy";
+import { SharedJwtStrategy } from "@my-msa-project/share/security/jwt.strategy";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { PassportModule } from "@nestjs/passport";
 
@@ -29,7 +29,7 @@ import { PassportModule } from "@nestjs/passport";
   providers: [
     { provide: USER_REPOSITORY, useClass: UserRepositoryAdapter },
     { provide: HASHING_SERVICE, useClass: BcryptHashingService },
-    JwtStrategy,
+    SharedJwtStrategy,
     AuthService,
   ],
 })
