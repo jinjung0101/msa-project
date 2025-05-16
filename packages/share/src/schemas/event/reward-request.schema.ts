@@ -8,4 +8,4 @@ export const RewardRequestZodSchema = z.object({
   processedAt: z.preprocess((d) => new Date(d as string), z.date()).optional(),
 });
 
-export type RewardRequestModel = z.infer<typeof RewardRequestZodSchema>;
+export type RewardRequestZodModel = z.infer<typeof RewardRequestZodSchema>;

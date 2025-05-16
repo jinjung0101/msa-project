@@ -8,4 +8,4 @@ export const EventZodSchema = z.object({
   status: z.enum(["active", "inactive"]).default("active"),
 });
 
-export type EventModel = z.infer<typeof EventZodSchema>;
+export type EventZodModel = z.infer<typeof EventZodSchema>;

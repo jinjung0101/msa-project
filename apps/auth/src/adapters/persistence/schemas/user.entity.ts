@@ -1,4 +1,4 @@
-import { UserRole } from "@my-msa-project/share/models/user.model";
+import { UserRoleEnum } from "@my-msa-project/share/schemas/auth/user-role.schema";
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document } from "mongoose";
 
@@ -12,11 +12,20 @@ export class UserEntity {
 
   @Prop({
     type: String,
-    enum: Object.values(UserRole),
-    default: UserRole.USER,
+    enum: Object.values(UserRoleEnum),
+    default: UserRoleEnum.USER,
   })
-  role!: UserRole;
+  role!: UserRoleEnum;
 }
 
 export type UserDocument = UserEntity & Document;
 export const UserSchema = SchemaFactory.createForClass(UserEntity);
+
+// 응답 직전에 민감 데이터 제거 및 id 변환
+UserSchema.set("toJSON", {
+  transform(doc, ret) {
+    delete ret.passwordHash;
+    ret.id = ret._id.toString();
+    delete ret._id;
+  },
+});

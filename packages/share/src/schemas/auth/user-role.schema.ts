@@ -8,3 +8,10 @@ export const UserRoleZodSchema = z.enum([
 ] as const);
 
 export type UserRole = z.infer<typeof UserRoleZodSchema>;
+
+export enum UserRoleEnum {
+  USER = "USER",
+  OPERATOR = "OPERATOR",
+  AUDITOR = "AUDITOR",
+  ADMIN = "ADMIN",
+}

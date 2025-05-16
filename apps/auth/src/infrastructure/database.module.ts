@@ -12,6 +12,6 @@ import {
     MongooseModule.forFeature([{ name: UserEntity.name, schema: UserSchema }]),
   ],
   providers: [],
-  exports: [MongooseModule],
+  exports: [MongooseModule, SharedMongooseModule],
 })
 export class DatabaseModule {}

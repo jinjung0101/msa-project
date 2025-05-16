@@ -21,4 +21,4 @@ export const ConditionZodSchema = z.discriminatedUnion("type", [
   }),
 ]);
 
-export type ConditionDefinitionModel = z.infer<typeof ConditionZodSchema>;
+export type ConditionDefinitionZodModel = z.infer<typeof ConditionZodSchema>;

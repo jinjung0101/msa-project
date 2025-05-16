@@ -28,4 +28,6 @@ export const RewardDefinitionZodSchema = z.discriminatedUnion("type", [
   }),
 ]);
 
-export type RewardDefinitionModel = z.infer<typeof RewardDefinitionZodSchema>;
+export type RewardDefinitionZodModel = z.infer<
+  typeof RewardDefinitionZodSchema
+>;

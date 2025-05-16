@@ -7,4 +7,4 @@ export const RewardZodSchema = z.object({
   amount: z.number().min(0),
 });
 
-export type RewardModel = z.infer<typeof RewardZodSchema>;
+export type RewardZodModel = z.infer<typeof RewardZodSchema>;
