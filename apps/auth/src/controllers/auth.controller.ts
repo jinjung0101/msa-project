@@ -23,7 +23,7 @@ export class AuthController {
   @Post("login")
   login(
     @Body(new ZodValidationPipe(LoginUserSchema)) dto: LoginUserDto
-  ): Promise<UserResponseDto> {
+  ): Promise<{ accessToken: string }> {
     return this.authService.login(dto);
   }
 }

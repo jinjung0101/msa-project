@@ -19,7 +19,7 @@ pnpm-debug.log*
 
 # --- 환경 변수 ---
 .env
-.env.*               # .env.local, .env.test 등
+.env.*              
 
 # --- Turborepo 캐시 ---
 .turbo/

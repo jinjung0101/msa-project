@@ -15,12 +15,14 @@ import {
 } from "@my-msa-project/share/schemas/auth/user.schema";
 import { HASHING_SERVICE, HashingService } from "./hashing.service";
 import { UserRoleEnum } from "@my-msa-project/share/schemas/auth/user-role.schema";
+import { JwtService } from "@nestjs/jwt";
 
 @Injectable()
 export class AuthService {
   constructor(
     @Inject(USER_REPOSITORY) private readonly userRepo: UserRepositoryPort,
-    @Inject(HASHING_SERVICE) private readonly hashingService: HashingService
+    @Inject(HASHING_SERVICE) private readonly hashingService: HashingService,
+    private readonly jwtService: JwtService
   ) {}
 
   async register(dto: RegisterUserDto): Promise<UserResponseDto> {
@@ -47,7 +49,7 @@ export class AuthService {
     }
   }
 
-  async login(dto: LoginUserDto): Promise<UserResponseDto> {
+  async login(dto: LoginUserDto): Promise<{ accessToken: string }> {
     const cred = await this.userRepo.findUserWithHash(dto.username);
     if (
       !cred ||
@@ -57,7 +59,9 @@ export class AuthService {
         "아이디 또는 비밀번호가 올바르지 않습니다"
       );
     }
-    // JWT 발급 등…
-    return { id: cred.id, username: cred.username, role: cred.role };
+    // JWT 발급
+    const payload = { sub: cred.id, username: cred.username, role: cred.role };
+    const accessToken = this.jwtService.sign(payload);
+    return { accessToken };
   }
 }
