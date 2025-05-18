@@ -2,7 +2,7 @@ import { HttpModule } from "@nestjs/axios";
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { APP_GUARD } from "@nestjs/core";
-import { PassportModule } from "@nestjs/passport";
+import { AuthGuard, PassportModule } from "@nestjs/passport";
 import { RolesGuard } from "./guards/roles.guard";
 import { SharedJwtStrategy } from "@my-msa-project/share/security/jwt.strategy";
 
@@ -15,7 +15,7 @@ import { SharedJwtStrategy } from "@my-msa-project/share/security/jwt.strategy";
   controllers: [],
   providers: [
     SharedJwtStrategy,
-    { provide: APP_GUARD, useClass: PassportModule }, // JwtAuthGuard 역할
+    { provide: APP_GUARD, useClass: AuthGuard("jwt") }, // JwtAuthGuard 역할
     { provide: APP_GUARD, useClass: RolesGuard }, // 전역 RolesGuard
   ],
 })
