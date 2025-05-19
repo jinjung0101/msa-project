@@ -21,7 +21,7 @@ export class RewardDefinitionsController {
   @ApiResponse({ status: 201, type: [String] })
   create(
     @Param("eventId") eventId: string,
-    @Body(new ZodValidationPipe(z.array(RewardDefinitionZodSchema)))
+    @Body(new ZodValidationPipe(RewardDefinitionZodSchema))
     dto: RewardDefinitionZodModel
   ) {
     // eventId 덮어쓰기
