@@ -1,7 +1,7 @@
 import { z } from "zod";
 
-const LoginStreakParams = z.object({ days: z.number().min(1) });
-const InviteFriendsParams = z.object({ count: z.number().min(1) });
+export const LoginStreakParams = z.object({ days: z.number().min(1) });
+export const InviteFriendsParams = z.object({ count: z.number().min(1) });
 
 export const ConditionZodSchema = z.discriminatedUnion("type", [
   z.object({

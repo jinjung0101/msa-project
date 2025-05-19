@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document, Types } from "mongoose";
+import { BaseSchemaOptions } from "./base.schema";
 
 @Schema({ timestamps: { createdAt: "grantedAt", updatedAt: false } })
 export class RewardEntity {
@@ -18,3 +19,5 @@ export class RewardEntity {
 
 export type RewardDocument = RewardEntity & Document;
 export const RewardSchema = SchemaFactory.createForClass(RewardEntity);
+
+RewardSchema.set("toJSON", BaseSchemaOptions.toJSON);

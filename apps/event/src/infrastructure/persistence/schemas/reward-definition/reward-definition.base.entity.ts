@@ -1,14 +1,20 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, Types } from 'mongoose';
+import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { Document, Types } from "mongoose";
+import { BaseSchemaOptions } from "../base.schema";
 
-@Schema({ discriminatorKey: 'type' })
+@Schema({ discriminatorKey: "type" })
 export class RewardDefinitionBaseEntity {
-  @Prop({ type: Types.ObjectId, ref: 'Event', required: true, index: true })
+  @Prop({ type: Types.ObjectId, ref: "Event", required: true, index: true })
   eventId!: Types.ObjectId;
 
-  @Prop({ required: true, enum: ['points','item','coupon'] })
+  @Prop({ required: true, enum: ["points", "item", "coupon"] })
   type!: string;
 }
 
-export type RewardDefinitionBaseDocument = RewardDefinitionBaseEntity & Document;
-export const RewardDefinitionBaseSchema = SchemaFactory.createForClass(RewardDefinitionBaseEntity);
+export type RewardDefinitionBaseDocument = RewardDefinitionBaseEntity &
+  Document;
+export const RewardDefinitionBaseSchema = SchemaFactory.createForClass(
+  RewardDefinitionBaseEntity
+);
+
+RewardDefinitionBaseSchema.set("toJSON", BaseSchemaOptions.toJSON);

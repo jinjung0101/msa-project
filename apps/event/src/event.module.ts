@@ -1,21 +1,58 @@
 import { Module } from "@nestjs/common";
-import { EventController } from "./event.controller";
-import { EventService } from "./event.service";
-import { EventRepository } from "./adapters/persistence/repositories/event.repository";
 import { DatabaseModule } from "./infrastructure/database.module";
-import { APP_PIPE } from "@nestjs/core";
-import { ZodValidationPipe } from "infrastructure/pipes/zod-validation.pipe";
+import { APP_GUARD } from "@nestjs/core";
+import { EventsController } from "./controllers/events.controller";
+import { EventService } from "./domain/services/event.service";
+import { EVENT_REPOSITORY } from "./domain/ports/event.repository.port";
+import { EventRepositoryAdapter } from "./infrastructure/persistence/repositories/event.repository.adapter";
+import { ConfigModule } from "@nestjs/config";
+import { SharedJwtStrategy } from "@my-msa-project/share/security/jwt.strategy";
+import { AuthGuard, PassportModule } from "@nestjs/passport";
+import { ConditionService } from "./domain/services/condition.service";
+import { ConditionRepositoryAdapter } from "./infrastructure/persistence/repositories/condition.repository.adapter";
+import { CONDITION_REPOSITORY } from "./domain/ports/condition.repository.port";
+import { RewardDefinitionService } from "./domain/services/reward-definition.service";
+import { REWARD_DEFINITION_REPOSITORY } from "./domain/ports/reward-definition.repository.port";
+import { RewardDefinitionRepositoryAdapter } from "./infrastructure/persistence/repositories/reward-definition.repository.adapter";
+import { RolesGuard } from "@my-msa-project/share/security/roles.guard";
+import { RewardDefinitionsController } from "./controllers/reward-definitions.controller";
+import { REWARD_REQUEST_REPOSITORY } from "./domain/ports/reward-request.repository.port";
+import { RewardRequestRepositoryAdapter } from "./infrastructure/persistence/repositories/reward-request.repository.adapter";
+import { RewardRequestService } from "./domain/services/reward-request.service";
+import { RewardRequestsController } from "./controllers/reward-requests.controller";
+import { LOGIN_LOG_REPOSITORY } from "./domain/ports/login-log.repository.port";
+import { LoginLogRepositoryAdapter } from "./infrastructure/persistence/repositories/login-log.repository.adapter";
 
 @Module({
-  imports: [DatabaseModule],
-  controllers: [EventController, EventRepository],
+  imports: [
+    DatabaseModule,
+    ConfigModule.forRoot({ isGlobal: true }),
+    PassportModule.register({ defaultStrategy: "jwt" }),
+  ],
+  controllers: [
+    EventsController,
+    RewardDefinitionsController,
+    RewardRequestsController,
+  ],
   providers: [
-    {
-      provide: APP_PIPE,
-      useClass: ZodValidationPipe,
-    },
+    SharedJwtStrategy,
+    { provide: APP_GUARD, useClass: AuthGuard("jwt") },
+    { provide: APP_GUARD, useClass: RolesGuard },
     EventService,
-    EventRepository,
+    { provide: EVENT_REPOSITORY, useClass: EventRepositoryAdapter },
+    ConditionService,
+    { provide: CONDITION_REPOSITORY, useClass: ConditionRepositoryAdapter },
+    RewardDefinitionService,
+    {
+      provide: REWARD_DEFINITION_REPOSITORY,
+      useClass: RewardDefinitionRepositoryAdapter,
+    },
+    {
+      provide: REWARD_REQUEST_REPOSITORY,
+      useClass: RewardRequestRepositoryAdapter,
+    },
+    { provide: LOGIN_LOG_REPOSITORY, useClass: LoginLogRepositoryAdapter },
+    RewardRequestService,
   ],
 })
 export class EventModule {}

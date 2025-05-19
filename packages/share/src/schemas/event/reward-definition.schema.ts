@@ -1,11 +1,11 @@
 import { z } from "zod";
 
-const PointsDetail = z.object({ amount: z.number().min(0) });
-const ItemDetail = z.object({
+export const PointsDetail = z.object({ amount: z.number().min(0) });
+export const ItemDetail = z.object({
   itemId: z.string(),
   quantity: z.number().min(1),
 });
-const CouponDetail = z.object({
+export const CouponDetail = z.object({
   code: z.string(),
   expiresAt: z.preprocess((d) => new Date(d as string), z.date()),
 });

@@ -6,7 +6,7 @@ import {
   Param,
   UseGuards,
   Req,
-  Headers 
+  Headers,
 } from "@nestjs/common";
 import {
   RegisterUserSchema,
@@ -19,11 +19,10 @@ import {
 } from "@my-msa-project/share/schemas/auth/user.schema";
 import { AuthService } from "./auth.service";
 import { AuthGuard } from "@nestjs/passport";
-import { RolesGuard } from "../../guards/roles.guard";
-import { Roles } from "../../guards/roles.decorator";
+import { RolesGuard } from "../../../../../packages/share/src/security/roles.guard";
+import { Roles } from "../../../../../packages/share/src/security/roles.decorator";
 import { UserRoleEnum } from "@my-msa-project/share/schemas/auth/user-role.schema";
 import { ZodValidationPipe } from "infrastructure/pipes/zod-validation.pipe";
-import { ApiBearerAuth } from "@nestjs/swagger";
 
 @Controller("auth")
 export class AuthController {
