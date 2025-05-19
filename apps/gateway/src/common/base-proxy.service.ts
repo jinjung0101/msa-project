@@ -7,28 +7,59 @@ export abstract class BaseProxyService {
     private readonly baseUrl: string
   ) {}
 
-  protected async get<T>(path: string, token: string): Promise<T> {
+  protected async get<TResponse>(path: string, token: string): Promise<TResponse> {
     const resp = await firstValueFrom(
-      this.http.get<T>(`${this.baseUrl}${path}`, {
-        headers: { Authorization: token },
+      this.http.get<TResponse>(`${this.baseUrl}${path}`, {
+        headers: { Authorization: `Bearer ${token}` },
       })
     );
     return resp.data;
   }
 
-  
-  protected async post<T, U>(
+  protected async post<TResponse, TRequest>(path: string, body: TRequest, token: string  ): Promise<TResponse> {
+    const resp = await firstValueFrom(
+      this.http.post<TResponse>(`${this.baseUrl}${path}`, body, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+    );
+    return resp.data;
+  }
+
+  protected async put<TResponse, TRequest>(
     path: string,
-    body: U,
+    body: TRequest,
     token: string
-  ): Promise<T> {
-    const resp = await firstValueFrom(
-      this.http.post<T>(`${this.baseUrl}${path}`, body, {
-        headers: { Authorization: token },
+  ): Promise<TResponse> {
+   const resp = await firstValueFrom(
+      this.http.put<TResponse>(`${this.baseUrl}${path}`, body, {
+        headers: { Authorization: `Bearer ${token}` },
       })
     );
     return resp.data;
   }
 
-  // 필요시 put, delete 메서드도 동일 패턴으로 추가 예정
+  protected async patch<TResponse, TRequest>(
+    path: string,
+    body: TRequest,
+    token: string
+  ): Promise<TResponse> {
+    const resp = await firstValueFrom(
+      this.http.patch<TResponse>(`${this.baseUrl}${path}`, body, {
+       headers: { Authorization: `Bearer ${token}` },
+      })
+    );
+    return resp.data;
+  }
+
+  protected async delete<TResponse>(
+    path: string,
+    token: string
+  ): Promise<TResponse> {
+    const resp = await firstValueFrom(
+      this.http.delete<TResponse>(`${this.baseUrl}${path}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+    );
+    return resp.data;
+  }
 }

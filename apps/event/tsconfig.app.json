@@ -9,7 +9,7 @@
     "outDir": "../../dist/event",
     "rootDir": "src",
     "strict": true,
-    "tsBuildInfoFile": "../../dist/auth/tsconfig.tsbuildinfo"
+    "tsBuildInfoFile": "../../dist/event/tsconfig.tsbuildinfo"
   },
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules", "dist", "test", "**/*.spec.ts"]

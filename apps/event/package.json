@@ -20,6 +20,5 @@
     "zod": "^3.24.4"
   },
   "devDependencies": {
-    "@types/mongoose": "^5.11.97"
   }
 }

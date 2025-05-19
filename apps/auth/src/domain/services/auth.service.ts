@@ -16,7 +16,7 @@ import {
 } from "@my-msa-project/share/schemas/auth/user.schema";
 import { HASHING_SERVICE, HashingService } from "./hashing.service";
 import { UserRoleEnum } from "@my-msa-project/share/schemas/auth/user-role.schema";
-import { JwtService } from "@nestjs/jwt";
+import { JwtService } from "@nestjs/jwt";  
 
 @Injectable()
 export class AuthService {
@@ -78,5 +78,14 @@ export class AuthService {
 
     // 2) 업데이트
     return this.userRepo.updateRole(existing.id, role);
+  }
+
+  async getUserById(id: string): Promise<UserResponseDto> {
+    return this.userRepo.findById(id);
+  }
+
+
+  async getAllUsers(): Promise<UserResponseDto[]> {
+    return this.userRepo.findAll({});
   }
 }

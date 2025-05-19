@@ -1,4 +1,4 @@
-import { Body, Controller, Param, Patch, Post } from "@nestjs/common";
+import { Body, Controller, Get, Param, Patch, Post, Req, UseGuards } from "@nestjs/common";
 import {
   ApiTags,
   ApiOperation,
@@ -18,6 +18,10 @@ import {
 } from "@my-msa-project/share/schemas/auth/user.schema";
 import { UserResponseDto as UserResponseClass } from "./dtos/user-response.dto";
 import { AccessTokenDto } from "./dtos/access-token.dto";
+import { AuthGuard } from "@nestjs/passport";
+import { RolesGuard } from "@my-msa-project/share/security/roles.guard";
+import { UserRoleEnum } from "@my-msa-project/share/schemas/auth/user-role.schema";
+import { Roles } from "@my-msa-project/share/security/roles.decorator";
 
 
 @ApiTags("Auth")
@@ -47,6 +51,8 @@ export class AuthController {
   @Patch("users/:username/role")
   @ApiOperation({ summary: "사용자 롤 변경", description: "ADMIN 전용" })
   @ApiBearerAuth()
+  @UseGuards(AuthGuard("jwt"), RolesGuard)
+  @Roles(UserRoleEnum.ADMIN)
   @ApiResponse({ status: 200, type: UserResponseClass })
   @ApiResponse({ status: 404, description: "사용자 없음" })
   assignRole(
@@ -54,5 +60,20 @@ export class AuthController {
     @Body(new ZodValidationPipe(AssignRoleSchema)) dto: AssignRoleDto
   ): Promise<UserResponseDto> {
     return this.authService.assignRole(username, dto.role);
+  }
+
+  @Get("me")
+  @ApiBearerAuth("access-token")
+  @UseGuards(AuthGuard("jwt"))
+  getProfile(@Req() req: Request & { user: { sub: string } }): Promise<UserResponseDto> {
+    return this.authService.getUserById(req.user.sub);
+  }
+
+  @Get("users")
+  @ApiBearerAuth("access-token")
+  @UseGuards(AuthGuard("jwt"), RolesGuard)
+  @Roles(UserRoleEnum.AUDITOR)
+  getAllUsers(): Promise<UserResponseDto[]> {
+    return this.authService.getAllUsers();
   }
 }

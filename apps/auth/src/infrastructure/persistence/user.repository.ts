@@ -65,4 +65,17 @@ export class UserRepositoryAdapter implements UserRepositoryPort {
     }
     return toUserResponseDto(doc);
   }
+
+    async findById(id: string): Promise<UserResponseDto> {
+    const doc = await this.model.findById(id).exec();
+    if (!doc) throw new NotFoundException(`사용자(id=${id})를 찾을 수 없습니다`);
+    return toUserResponseDto(doc);
+  }
+
+  async findAll(
+    filter: Partial<Record<keyof UserResponseDto, unknown>>
+  ): Promise<UserResponseDto[]> {
+    const docs = await this.model.find(filter as any).exec();
+    return docs.map(toUserResponseDto);
+  }
 }

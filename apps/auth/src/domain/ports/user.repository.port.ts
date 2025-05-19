@@ -23,4 +23,8 @@ export interface UserRepositoryPort {
   ): Promise<(UserResponseDto & { passwordHash: string }) | null>;
 
   updateRole(userId: string, role: UserRoleEnum): Promise<UserResponseDto>;
+
+  findById(id: string): Promise<UserResponseDto>;
+
+  findAll(filter: Partial<Record<keyof UserResponseDto, unknown>>): Promise<UserResponseDto[]>;
 }

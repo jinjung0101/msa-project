@@ -21,7 +21,5 @@
     "swagger-ui-express": "^4.5.0"
   },
   "devDependencies": {
-    "@types/mongoose": "^5.11.97",
-    "@types/passport-jwt": "^4.0.1"
   }
 }

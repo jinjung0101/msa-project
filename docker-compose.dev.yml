@@ -1,0 +1,37 @@
+version: "3.8"
+services:
+  auth:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: auth-runtime
+    volumes:
+      - ./apps/auth/src:/app/src:cached
+      - ./packages/share/dist:/app/node_modules/@my-msa-project/share:ro
+    ports:
+      - "3001:3001"
+    command: pnpm dev:auth
+
+  event:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: event-runtime
+    volumes:
+      - ./apps/event/src:/app/src:cached
+      - ./packages/share/dist:/app/node_modules/@my-msa-project/share:ro
+    ports:
+      - "3002:3002"
+    command: pnpm dev:event
+
+  gateway:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: gateway-runtime
+    volumes:
+      - ./apps/gateway/src:/app/src:cached
+      - ./packages/share/dist:/app/node_modules/@my-msa-project/share:ro
+    ports:
+      - "3000:3000"
+    command: pnpm dev:gateway

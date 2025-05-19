@@ -22,6 +22,8 @@ import { RewardRequestService } from "./domain/services/reward-request.service";
 import { RewardRequestsController } from "./controllers/reward-requests.controller";
 import { LOGIN_LOG_REPOSITORY } from "./domain/ports/login-log.repository.port";
 import { LoginLogRepositoryAdapter } from "./infrastructure/persistence/repositories/login-log.repository.adapter";
+import { REWARD_REPOSITORY } from "./domain/ports/reward.repository.port";
+import { RewardRepositoryAdapter } from "./infrastructure/persistence/repositories/reward.repository.adapter";
 
 @Module({
   imports: [
@@ -41,6 +43,7 @@ import { LoginLogRepositoryAdapter } from "./infrastructure/persistence/reposito
     EventService,
     { provide: EVENT_REPOSITORY, useClass: EventRepositoryAdapter },
     ConditionService,
+    { provide: REWARD_REPOSITORY, useClass: RewardRepositoryAdapter },
     { provide: CONDITION_REPOSITORY, useClass: ConditionRepositoryAdapter },
     RewardDefinitionService,
     {

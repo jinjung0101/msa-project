@@ -1,6 +1,7 @@
 version: "3.8"
 services:
   gateway:
+    image: my-registry/my-msa-project/gateway:latest
     deploy:
       restart_policy:
         condition: on-failure
@@ -11,6 +12,7 @@ services:
       - NODE_ENV=production
 
   auth:
+    image: my-registry/my-msa-project/auth:latest
     deploy:
       restart_policy:
         condition: on-failure
@@ -18,6 +20,7 @@ services:
       - NODE_ENV=production
 
   event:
+    image: my-registry/my-msa-project/event:latest
     deploy:
       restart_policy:
         condition: on-failure
