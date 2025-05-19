@@ -23,7 +23,6 @@ export class RewardDefinitionService {
    * 특정 이벤트의 모든 보상 정의를 조회 (추가 기능)
    */
   async findByEvent(eventId: string): Promise<RewardDefinitionZodModel[]> {
-    // 만약 repository에 없는 메서드라면, 포트·어댑터에 추가 구현하세요.
     return this.rewardDefRepo.findByEvent(eventId);
   }
 }

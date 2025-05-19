@@ -1,4 +1,4 @@
-import { Inject, Injectable } from "@nestjs/common";
+import { Inject, Injectable, NotFoundException } from "@nestjs/common";
 import {
   EVENT_REPOSITORY,
   EventRepositoryPort,
@@ -53,12 +53,16 @@ export class EventService {
     });
   }
 
-  list(): Promise<EventZodModel[]> {
+  async list(): Promise<EventResponseDto[]> {
     return this.repo.findAll();
   }
 
-  get(id: string): Promise<EventZodModel | null> {
-    return this.repo.findById(id);
+  async get(id: string): Promise<EventResponseDto> {
+    const event = await this.repo.findById(id);
+    if (!event) {
+      throw new NotFoundException(`EVENT_ID=${id}를 찾을 수 없습니다.`);
+    }
+    return event;
   }
 
   deactivate(id: string): Promise<void> {

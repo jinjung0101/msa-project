@@ -29,7 +29,6 @@ export class ConditionService {
    * 특정 이벤트의 모든 조건을 조회 (추가 기능)
    */
   async findByEvent(eventId: string): Promise<ConditionDefinitionZodModel[]> {
-    // repository에 findByEvent 메서드가 없다면, 추가 정의 후 구현하세요.
     return this.conditionRepo.findByEvent(eventId);
   }
 
@@ -37,31 +36,36 @@ export class ConditionService {
    * 로그인 연속 일수 검증: 마지막 days일 동안 연속으로 로그인했는지 확인
    */
   async validateLoginStreak(userId: string, days: number): Promise<boolean> {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    // 1) 시작·끝 날짜를 한 번만 계산
+    const end = new Date();
+    const start = new Date();
+    start.setDate(end.getDate() - days + 1);
 
-    const start = new Date(today);
-    start.setDate(start.getDate() - (days - 1));
+    // 2) 해당 범위의 로그인 기록을 한 번에 조회
+    const dates = await this.loginLogRepo.findLoginDates(userId, start, end);
 
-    // 조건 기간 내 로그인 날짜 목록 조회
-    const dates = await this.loginLogRepo.findLoginDates(
-      userId,
-      start,
-      new Date(today.getTime() + 24 * 60 * 60 * 1000 - 1)
-    );
-
-    // 연속 일수 체크
+    // 3) 메모리에서 연속성 검사
+    const daySet = new Set(dates.map((d) => d.toDateString()));
     for (let i = 0; i < days; i++) {
-      const checkDate = new Date(start);
-      checkDate.setDate(start.getDate() + i);
-      const found = dates.some(
-        (d) =>
-          d.getFullYear() === checkDate.getFullYear() &&
-          d.getMonth() === checkDate.getMonth() &&
-          d.getDate() === checkDate.getDate()
-      );
-      if (!found) return false;
+      const d = new Date(start);
+      d.setDate(d.getDate() + i);
+      if (!daySet.has(d.toDateString())) return false;
     }
     return true;
+  }
+
+  /** 친구 초대 조건 검증 (구현 X) */
+  async validateInviteFriends(userId: string, count: number): Promise<boolean> {
+    // inviteFriends 로직을 여기에 추가
+    return true; // TODO
+  }
+
+  /** custom 조건 검증 (구현 X) */
+  async validateCustom(
+    userId: string,
+    parameters: Record<string, unknown>
+  ): Promise<boolean> {
+    // 커스텀 로직
+    return true; // TODO
   }
 }

@@ -36,6 +36,7 @@ export class EventsController {
 
   @Get(":id")
   @ApiResponse({ status: 200, type: EventResponseDto })
+  @ApiResponse({ status: 404, description: "이벤트를 찾을 수 없음" })
   get(@Param("id") id: string) {
     return this.service.get(id);
   }
