@@ -75,7 +75,8 @@ export class AuthController {
     @Param("username") username: string,
     @Body(new ZodValidationPipe(AssignRoleSchema)) dto: AssignRoleDto
   ): Promise<UserResponseDto> {
-    return this.authService.assignRole(username, dto.role);
+    const { role } = dto;
+    return this.authService.assignRole(username, role!);
   }
 
   @Get("me")

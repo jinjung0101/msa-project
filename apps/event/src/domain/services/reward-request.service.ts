@@ -18,12 +18,11 @@ export class RewardRequestService {
   ) {}
 
   async create(req: RewardRequestZodModel) {
-    if (await this.repo.existsPendingOrApproved(req.userId, req.eventId))
+    if (await this.repo.existsPendingOrApproved(req.userId!, req.eventId!)) {
       throw new BadRequestException("이미 요청된 이벤트입니다");
-
-    const conds = await this.conditionService.findByEvent(req.eventId);
-
-    await this.validator.validateAll(req.userId, conds);
+    }
+    const conds = await this.conditionService.findByEvent(req.eventId!);
+    await this.validator.validateAll(req.userId!, conds);
     return this.repo.create({ ...req, status: "pending" });
   }
 

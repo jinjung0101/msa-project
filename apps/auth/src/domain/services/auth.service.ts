@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   Inject,
   Injectable,
@@ -39,18 +40,19 @@ export class AuthService {
   ) {}
 
   async register(dto: RegisterUserDto): Promise<UserResponseDto> {
+    const { username, password } = dto;
     // 1) 중복 검사
-    if (await this.userRepo.existsByUsername(dto.username)) {
+    if (await this.userRepo.existsByUsername(username!)) {
       throw new ConflictException("이미 사용 중인 사용자 이름입니다");
     }
 
     // 2) 평문 비밀번호 해싱
-    const passwordHash = await this.hashingService.hash(dto.password);
+    const passwordHash = await this.hashingService.hash(password!);
 
     // 3) 저장
     try {
       return await this.userRepo.create({
-        ...dto,
+        username,
         passwordHash,
         role: UserRoleEnum.USER,
       });
@@ -63,14 +65,14 @@ export class AuthService {
   }
 
   async login(dto: LoginUserDto): Promise<{ accessToken: string }> {
-    const cred = await this.userRepo.findUserWithHash(dto.username);
-    if (
-      !cred ||
-      !(await this.hashingService.compare(dto.password, cred.passwordHash))
-    ) {
-      throw new UnauthorizedException(
-        "아이디 또는 비밀번호가 올바르지 않습니다"
-      );
+    const { username, password } = dto;
+    // 1) 사용자 존재 여부 및 비밀번호 확인
+    const cred = await this.userRepo.findUserWithHash(username!);
+    if (!cred) {
+      throw new UnauthorizedException("사용자 없음");
+    }
+    if (!(await this.hashingService.compare(password!, cred.passwordHash))) {
+      throw new UnauthorizedException("비밀번호 불일치");
     }
     // 2) 토큰 생성
     const jti = uuidv4();
@@ -87,8 +89,12 @@ export class AuthService {
 
     // 3) 세션 upsert → 중복 로그인 시 기존 토큰 즉시 만료 처리
     const expiresAt = new Date(Date.now() + expiresInSec * 1000);
-    await this.sessionRepo.upsert({ userId: cred.id, jti, expiresAt });
 
+    await this.sessionRepo.upsert({
+      userId: cred.id!,
+      jti,
+      expiresAt,
+    });
     return { accessToken };
   }
 
@@ -101,13 +107,16 @@ export class AuthService {
     username: string,
     role: UserRoleEnum
   ): Promise<UserResponseDto> {
+    if (!role) {
+      throw new BadRequestException("role은 필수입니다");
+    }
     // 1) 존재 확인 (NotFoundException을 던지도록 레포가 처리해 주므로 생략 가능)
     const existing = await this.userRepo.findByUsername(username);
     if (!existing)
       throw new NotFoundException(`사용자(id=${username})를 찾을 수 없습니다`);
 
     // 2) 업데이트
-    return this.userRepo.updateRole(existing.id, role);
+    return this.userRepo.updateRole(existing.id!, role);
   }
 
   async getUserById(id: string): Promise<UserResponseDto> {

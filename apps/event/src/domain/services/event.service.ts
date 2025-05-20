@@ -1,4 +1,9 @@
-import { Inject, Injectable, NotFoundException } from "@nestjs/common";
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from "@nestjs/common";
 import {
   EVENT_REPOSITORY,
   EventRepositoryPort,
@@ -25,27 +30,33 @@ export class EventService {
 
   async create(dto: CreateEventDto) {
     return this.transaction.withTransaction(async () => {
-      // 조건 없이 빈 배열로 이벤트 먼저 생성
-      const event: EventResponseDto = await this.repo.create({
+      // 1) 필수 속성 검사
+      if (!dto.conditions?.length) {
+        throw new BadRequestException("조건은 최소 1개 이상이어야 합니다");
+      }
+      if (!dto.rewardDefinitions?.length) {
+        throw new BadRequestException("보상 정의는 최소 1개 이상이어야 합니다");
+      }
+
+      // 2) 이벤트 생성
+      const event = await this.repo.create({
         ...dto,
         conditions: [],
         rewardDefinitions: [],
       });
 
-      // 타입을 명시해 주면, TS가 literal 타입을 놓치지 않고 추론함
-      const conds: ConditionDefinitionZodModel[] = dto.conditions.map((c) => ({
-        ...c,
-        eventId: event.id,
-      }));
+      // 3) 매핑
+      const conds = dto.conditions.map((c) => ({ ...c, eventId: event.id }));
       const condIds = await this.conditionService.bulkCreate(conds);
 
-      const rdefs: RewardDefinitionZodModel[] = dto.rewardDefinitions.map(
-        (r) => ({ ...r, eventId: event.id })
-      );
+      const rdefs = dto.rewardDefinitions.map((r) => ({
+        ...r,
+        eventId: event.id,
+      }));
       const rdefIds = await this.rewardDefService.bulkCreate(rdefs);
 
-      // EventResponseDto 형태로 업데이트
-      return this.repo.update(event.id, {
+      // 4) 업데이트
+      return this.repo.update(event.id!, {
         ...event,
         conditions: condIds,
         rewardDefinitions: rdefIds,

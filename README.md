@@ -93,7 +93,7 @@ my-msa-project/
 ## ⚙️ 사전 준비
 
 1. Node.js v18 설치
-2. pnpm 설치 (`npm install -g pnpm`)
+2. pnpm 설치
 3. Docker & Docker Compose 설치
 4. MongoDB 실행 (docker-compose 포함)
 

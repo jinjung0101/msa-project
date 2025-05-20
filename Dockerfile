@@ -7,14 +7,12 @@ WORKDIR /monorepo
 # pnpm + tsc CLI 설치
 RUN npm install -g pnpm@latest typescript
 
-# workspace 정의 파일들 복사
+# 워크스페이스 메타파일 및 전체 소스 복사
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml tsconfig.base.json tsconfig.json ./
-
-# 소스 전체 복사 (packages + apps)
 COPY packages packages
 COPY apps     apps
 
-# 의존성 설치 & 전체 빌드 (build 스크립트가 tsc -b 순차 실행)
+# 전체 의존성 설치 및 빌드
 RUN pnpm install --frozen-lockfile
 RUN pnpm run build
 
@@ -25,18 +23,11 @@ RUN pnpm run build
 FROM node:18-alpine AS auth-runtime
 WORKDIR /app
 
-# prod용 의존성만 설치
-RUN npm install -g pnpm@latest
-COPY package.json pnpm-lock.yaml ./
-RUN pnpm install --prod --frozen-lockfile
-
-# 빌더에서 만든 auth 결과물만 복사
+# 빌더의 node_modules와 dist/auth를 그대로 가져오기
+COPY --from=builder /monorepo/node_modules ./node_modules
 COPY --from=builder /monorepo/dist/auth ./dist
 
-RUN mkdir -p node_modules/@my-msa-project
-COPY --from=builder /monorepo/packages/share/dist \
-                     node_modules/@my-msa-project/share
-
+# 공통 share 패키지는 이미 node_modules 안에 존재
 EXPOSE 3001
 CMD ["node", "dist/main.js"]
 
@@ -47,15 +38,8 @@ CMD ["node", "dist/main.js"]
 FROM node:18-alpine AS event-runtime
 WORKDIR /app
 
-RUN npm install -g pnpm@latest
-COPY package.json pnpm-lock.yaml ./
-RUN pnpm install --prod --frozen-lockfile
-
+COPY --from=builder /monorepo/node_modules ./node_modules
 COPY --from=builder /monorepo/dist/event ./dist
-
-RUN mkdir -p node_modules/@my-msa-project
-COPY --from=builder /monorepo/packages/share/dist \
-                     node_modules/@my-msa-project/share
 
 EXPOSE 3002
 CMD ["node", "dist/main.js"]
@@ -67,15 +51,8 @@ CMD ["node", "dist/main.js"]
 FROM node:18-alpine AS gateway-runtime
 WORKDIR /app
 
-RUN npm install -g pnpm@latest
-COPY package.json pnpm-lock.yaml ./
-RUN pnpm install --prod --frozen-lockfile
-
+COPY --from=builder /monorepo/node_modules ./node_modules
 COPY --from=builder /monorepo/dist/gateway ./dist
-
-RUN mkdir -p node_modules/@my-msa-project
-COPY --from=builder /monorepo/packages/share/dist \
-                     node_modules/@my-msa-project/share
 
 EXPOSE 3000
 CMD ["node", "dist/main.js"]

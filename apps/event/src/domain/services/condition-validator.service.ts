@@ -8,7 +8,10 @@ export class ConditionValidatorService {
 
   async validateAll(userId: string, conds: ConditionDefinitionZodModel[]) {
     for (const c of conds) {
-      const strat = this.strategies.find((s) => s.supports(c.type));
+      if (!c.type) {
+        throw new BadRequestException("지원되지 않는 조건 타입입니다");
+      }
+      const strat = this.strategies.find((s) => s.supports(c.type!));
       if (!strat)
         throw new BadRequestException(`지원되지 않는 조건 타입: ${c.type}`);
       const ok = await strat.validate(userId, c.parameters);
