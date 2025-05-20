@@ -7,9 +7,11 @@ import { USER_REPOSITORY } from "./domain/ports/user.repository.port";
 import { AuthController } from "./controllers/auth.controller";
 import { HASHING_SERVICE } from "./domain/services/hashing.service";
 import { BcryptHashingService } from "./infrastructure/hashing/bcrypt-hashing.service";
-import { SharedJwtStrategy } from "@my-msa-project/share/security/jwt.strategy";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { PassportModule } from "@nestjs/passport";
+import { SESSION_REPOSITORY } from "./domain/ports/session.repository.port";
+import { SessionRepositoryAdapter } from "./infrastructure/persistence/session.repository";
+import { AuthJwtStrategy } from "./infrastructure/strategies/auth-jwt.strategy";
 
 @Module({
   imports: [
@@ -29,7 +31,8 @@ import { PassportModule } from "@nestjs/passport";
   providers: [
     { provide: USER_REPOSITORY, useClass: UserRepositoryAdapter },
     { provide: HASHING_SERVICE, useClass: BcryptHashingService },
-    SharedJwtStrategy,
+    { provide: SESSION_REPOSITORY, useClass: SessionRepositoryAdapter },
+    AuthJwtStrategy,
     AuthService,
   ],
 })

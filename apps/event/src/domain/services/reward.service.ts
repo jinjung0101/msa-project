@@ -1,7 +1,10 @@
 import { Inject, Injectable, NotFoundException } from "@nestjs/common";
 
 import { RewardZodModel } from "@my-msa-project/share/schemas/event/reward.schema";
-import { REWARD_REPOSITORY, RewardRepositoryPort } from "../ports/reward.repository.port";
+import {
+  REWARD_REPOSITORY,
+  RewardRepositoryPort,
+} from "../ports/reward.repository.port";
 
 @Injectable()
 export class RewardService {

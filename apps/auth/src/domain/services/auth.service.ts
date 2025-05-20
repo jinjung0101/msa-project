@@ -16,13 +16,25 @@ import {
 } from "@my-msa-project/share/schemas/auth/user.schema";
 import { HASHING_SERVICE, HashingService } from "./hashing.service";
 import { UserRoleEnum } from "@my-msa-project/share/schemas/auth/user-role.schema";
-import { JwtService } from "@nestjs/jwt";  
+import { JwtService } from "@nestjs/jwt";
+import {
+  SESSION_REPOSITORY,
+  SessionRepositoryPort,
+} from "../ports/session.repository.port";
+import { v4 as uuidv4 } from "uuid";
 
 @Injectable()
 export class AuthService {
   constructor(
-    @Inject(USER_REPOSITORY) private readonly userRepo: UserRepositoryPort,
-    @Inject(HASHING_SERVICE) private readonly hashingService: HashingService,
+    @Inject(USER_REPOSITORY)
+    private readonly userRepo: UserRepositoryPort,
+
+    @Inject(HASHING_SERVICE)
+    private readonly hashingService: HashingService,
+
+    @Inject(SESSION_REPOSITORY)
+    private readonly sessionRepo: SessionRepositoryPort,
+
     private readonly jwtService: JwtService
   ) {}
 
@@ -60,10 +72,28 @@ export class AuthService {
         "아이디 또는 비밀번호가 올바르지 않습니다"
       );
     }
-    // JWT 발급
-    const payload = { sub: cred.id, username: cred.username, role: cred.role };
-    const accessToken = this.jwtService.sign(payload);
+    // 2) 토큰 생성
+    const jti = uuidv4();
+    const expiresInSec = 60 * 60; // 1시간
+    const payload = {
+      sub: cred.id,
+      username: cred.username,
+      role: cred.role,
+      jti,
+    };
+    const accessToken = this.jwtService.sign(payload, {
+      expiresIn: expiresInSec,
+    });
+
+    // 3) 세션 upsert → 중복 로그인 시 기존 토큰 즉시 만료 처리
+    const expiresAt = new Date(Date.now() + expiresInSec * 1000);
+    await this.sessionRepo.upsert({ userId: cred.id, jti, expiresAt });
+
     return { accessToken };
+  }
+
+  async logout(userId: string): Promise<void> {
+    await this.sessionRepo.deleteByUserId(userId);
   }
 
   /** 사용자 롤 변경(Assign Role) */
@@ -83,7 +113,6 @@ export class AuthService {
   async getUserById(id: string): Promise<UserResponseDto> {
     return this.userRepo.findById(id);
   }
-
 
   async getAllUsers(): Promise<UserResponseDto[]> {
     return this.userRepo.findAll({});

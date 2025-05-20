@@ -7,7 +7,10 @@ export abstract class BaseProxyService {
     private readonly baseUrl: string
   ) {}
 
-  protected async get<TResponse>(path: string, token: string): Promise<TResponse> {
+  protected async get<TResponse>(
+    path: string,
+    token: string
+  ): Promise<TResponse> {
     const resp = await firstValueFrom(
       this.http.get<TResponse>(`${this.baseUrl}${path}`, {
         headers: { Authorization: `Bearer ${token}` },
@@ -16,7 +19,11 @@ export abstract class BaseProxyService {
     return resp.data;
   }
 
-  protected async post<TResponse, TRequest>(path: string, body: TRequest, token: string  ): Promise<TResponse> {
+  protected async post<TResponse, TRequest>(
+    path: string,
+    body: TRequest,
+    token: string
+  ): Promise<TResponse> {
     const resp = await firstValueFrom(
       this.http.post<TResponse>(`${this.baseUrl}${path}`, body, {
         headers: { Authorization: `Bearer ${token}` },
@@ -30,7 +37,7 @@ export abstract class BaseProxyService {
     body: TRequest,
     token: string
   ): Promise<TResponse> {
-   const resp = await firstValueFrom(
+    const resp = await firstValueFrom(
       this.http.put<TResponse>(`${this.baseUrl}${path}`, body, {
         headers: { Authorization: `Bearer ${token}` },
       })
@@ -45,7 +52,7 @@ export abstract class BaseProxyService {
   ): Promise<TResponse> {
     const resp = await firstValueFrom(
       this.http.patch<TResponse>(`${this.baseUrl}${path}`, body, {
-       headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${token}` },
       })
     );
     return resp.data;

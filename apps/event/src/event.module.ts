@@ -6,7 +6,7 @@ import { EventService } from "./domain/services/event.service";
 import { EVENT_REPOSITORY } from "./domain/ports/event.repository.port";
 import { EventRepositoryAdapter } from "./infrastructure/persistence/repositories/event.repository.adapter";
 import { ConfigModule } from "@nestjs/config";
-import { SharedJwtStrategy } from "@my-msa-project/share/security/jwt.strategy";
+import { SharedJwtStrategy } from "@my-msa-project/share/security/base-jwt.strategy";
 import { AuthGuard, PassportModule } from "@nestjs/passport";
 import { ConditionService } from "./domain/services/condition.service";
 import { ConditionRepositoryAdapter } from "./infrastructure/persistence/repositories/condition.repository.adapter";

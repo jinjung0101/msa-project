@@ -1,4 +1,15 @@
-import { Controller, Get, Post, Patch, Delete, Param, Body, Req, UseGuards, Headers } from "@nestjs/common";
+import {
+  Controller,
+  Get,
+  Post,
+  Patch,
+  Delete,
+  Param,
+  Body,
+  Req,
+  UseGuards,
+  Headers,
+} from "@nestjs/common";
 
 import { AuthGuard } from "@nestjs/passport";
 import { EventProxyService } from "./event.proxy.service";

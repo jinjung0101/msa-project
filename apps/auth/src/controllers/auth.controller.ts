@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Param, Patch, Post, Req, UseGuards } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Req,
+  UseGuards,
+} from "@nestjs/common";
 import {
   ApiTags,
   ApiOperation,
@@ -22,7 +31,6 @@ import { AuthGuard } from "@nestjs/passport";
 import { RolesGuard } from "@my-msa-project/share/security/roles.guard";
 import { UserRoleEnum } from "@my-msa-project/share/schemas/auth/user-role.schema";
 import { Roles } from "@my-msa-project/share/security/roles.decorator";
-
 
 @ApiTags("Auth")
 @Controller("auth")
@@ -48,6 +56,14 @@ export class AuthController {
     return new AccessTokenDto({ accessToken });
   }
 
+  @Patch("logout")
+  @ApiOperation({ summary: "로그아웃" })
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard("jwt"))
+  logout(@Req() req: Request & { user: { sub: string } }): Promise<void> {
+    return this.authService.logout(req.user.sub);
+  }
+
   @Patch("users/:username/role")
   @ApiOperation({ summary: "사용자 롤 변경", description: "ADMIN 전용" })
   @ApiBearerAuth()
@@ -65,7 +81,9 @@ export class AuthController {
   @Get("me")
   @ApiBearerAuth("access-token")
   @UseGuards(AuthGuard("jwt"))
-  getProfile(@Req() req: Request & { user: { sub: string } }): Promise<UserResponseDto> {
+  getProfile(
+    @Req() req: Request & { user: { sub: string } }
+  ): Promise<UserResponseDto> {
     return this.authService.getUserById(req.user.sub);
   }
 

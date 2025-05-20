@@ -12,7 +12,8 @@ export class RewardRepositoryAdapter
   implements RewardRepositoryPort
 {
   constructor(
-    @InjectModel(RewardEntity.name) private readonly model: Model<RewardDocument>
+    @InjectModel(RewardEntity.name)
+    private readonly model: Model<RewardDocument>
   ) {
     super();
   }

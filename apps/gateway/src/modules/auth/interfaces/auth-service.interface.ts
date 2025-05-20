@@ -1,4 +1,9 @@
-import { RegisterUserDto, LoginUserDto, AssignRoleDto, UserResponseDto } from "@my-msa-project/share/schemas/auth/user.schema";
+import {
+  RegisterUserDto,
+  LoginUserDto,
+  AssignRoleDto,
+  UserResponseDto,
+} from "@my-msa-project/share/schemas/auth/user.schema";
 
 export interface GatewayAuthService {
   register(dto: RegisterUserDto): Promise<UserResponseDto>;

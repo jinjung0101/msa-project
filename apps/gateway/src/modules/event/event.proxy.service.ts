@@ -1,23 +1,17 @@
 import { Injectable } from "@nestjs/common";
 import { HttpService } from "@nestjs/axios";
 import { ConfigService } from "@nestjs/config";
-import {
-  CreateEventDto,
-} from "@my-msa-project/share/schemas/event/create-event.schema";
-import {
-  EventResponseDto,
-} from "@my-msa-project/share/schemas/event/event-response.schema";
-import {
-  RewardDefinitionZodModel,
-} from "@my-msa-project/share/schemas/event/reward-definition.schema";
+import { CreateEventDto } from "@my-msa-project/share/schemas/event/create-event.schema";
+import { EventResponseDto } from "@my-msa-project/share/schemas/event/event-response.schema";
+import { RewardDefinitionZodModel } from "@my-msa-project/share/schemas/event/reward-definition.schema";
 import { BaseProxyService } from "../../common/base-proxy.service";
 
 @Injectable()
 export class EventProxyService extends BaseProxyService {
   constructor(http: HttpService, config: ConfigService) {
     const url = config.get<string>("EVENT_SERVICE_URL");
-   if (!url) throw new Error("EVENT_SERVICE_URL이 설정되지 않았습니다");
-   super(http, url);
+    if (!url) throw new Error("EVENT_SERVICE_URL이 설정되지 않았습니다");
+    super(http, url);
   }
 
   getEvents(token: string): Promise<EventResponseDto[]> {

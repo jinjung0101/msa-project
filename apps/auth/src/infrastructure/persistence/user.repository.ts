@@ -16,8 +16,6 @@ export class UserRepositoryAdapter implements UserRepositoryPort {
     @InjectModel(UserEntity.name) private readonly model: Model<UserDocument>
   ) {}
 
-  private mapToDto = toUserResponseDto;
-
   async create(
     input: Omit<RegisterUserDto, "password"> & {
       passwordHash: string;
@@ -66,9 +64,10 @@ export class UserRepositoryAdapter implements UserRepositoryPort {
     return toUserResponseDto(doc);
   }
 
-    async findById(id: string): Promise<UserResponseDto> {
+  async findById(id: string): Promise<UserResponseDto> {
     const doc = await this.model.findById(id).exec();
-    if (!doc) throw new NotFoundException(`사용자(id=${id})를 찾을 수 없습니다`);
+    if (!doc)
+      throw new NotFoundException(`사용자(id=${id})를 찾을 수 없습니다`);
     return toUserResponseDto(doc);
   }
 

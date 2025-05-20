@@ -19,11 +19,19 @@ export class AuthService
   }
 
   register(dto: RegisterUserDto): Promise<UserResponseDto> {
-    return this.post<UserResponseDto, RegisterUserDto>("/auth/register", dto, "");
+    return this.post<UserResponseDto, RegisterUserDto>(
+      "/auth/register",
+      dto,
+      ""
+    );
   }
 
   login(dto: LoginUserDto): Promise<{ accessToken: string }> {
-    return this.post<{ accessToken: string }, LoginUserDto>("/auth/login", dto, "");
+    return this.post<{ accessToken: string }, LoginUserDto>(
+      "/auth/login",
+      dto,
+      ""
+    );
   }
 
   assignRole(
