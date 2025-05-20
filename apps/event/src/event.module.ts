@@ -24,6 +24,10 @@ import { LOGIN_LOG_REPOSITORY } from "./domain/ports/login-log.repository.port";
 import { LoginLogRepositoryAdapter } from "./infrastructure/persistence/repositories/login-log.repository.adapter";
 import { REWARD_REPOSITORY } from "./domain/ports/reward.repository.port";
 import { RewardRepositoryAdapter } from "./infrastructure/persistence/repositories/reward.repository.adapter";
+import { TRANSACTION_MANAGER } from "./domain/ports/transaction-manager.port";
+import { MongooseTransactionManager } from "./infrastructure/persistence/transaction-manager.adapter";
+import { ConditionValidatorService } from "./domain/services/condition-validator.service";
+import { LoginStreakStrategy } from "./domain/strategies/login-streak.strategy";
 
 @Module({
   imports: [
@@ -56,6 +60,9 @@ import { RewardRepositoryAdapter } from "./infrastructure/persistence/repositori
     },
     { provide: LOGIN_LOG_REPOSITORY, useClass: LoginLogRepositoryAdapter },
     RewardRequestService,
+    { provide: TRANSACTION_MANAGER, useClass: MongooseTransactionManager },
+    ConditionValidatorService,
+    LoginStreakStrategy,
   ],
 })
 export class EventModule {}

@@ -21,31 +21,56 @@
 
 이 시스템은 다음 설계 원칙과 구조를 기반으로 개발되었습니다:
 
-### 설계 원칙
+### 🏗️ 설계 원칙
 
 - **SOLID 원칙**: 단일 책임, 개방-폐쇄, 리스코프 치환, 인터페이스 분리, 의존 역전 원칙을 준수하여 각 클래스와 모듈이 명확한 역할을 가집니다.
 - **코드 재사용성(Reusability)**: 공통 로직과 유틸은 `packages/share`와 `packages/infrastructure`로 모듈화하여 중복을 최소화했습니다.
 - **타입 안정성(Type Safety)**: TypeScript의 엄격 모드를 활용하고, 런타임 스키마 검증을 위해 Zod를 도입하여 컴파일 단계와 실행 단계 모두에서 타입 오류를 방지합니다.
 - **포트 & 어댑터 패턴(Port & Adapter Pattern)**: 각 계층의 의존성을 역전시키고 인터페이스에만 의존하도록 설계하여 느슨한 결합, 테스트 용이성, 구현체 변경 최소화를 달성하고자 했습니다.
 
-### Monorepo + PNPM Workspace
+### 📦 Monorepo & pnpm Workspace
 
 **이유:** 여러 서비스(Gateway, Auth, Event)와 공통 패키지(Shared, Infrastructure)를 한 곳에서 관리하여 코드 재사용성과 변경 반영 속도를 극대화하기 위해 선택했습니다.
 
 **효과:** 공통 의존성 일관성 유지, 패키지 간 참조 손쉬움, 일괄 빌드/릴리즈
 
-### TypeScript Project References
+### 🚀 TypeScript 프로젝트 참조
 
 **이유:** `tsconfig.json`의 `references`와 `composite` 설정을 통해 증분 빌드를 활용하여 전체 빌드 시간을 단축하고 의존성 그래프를 명확히 관리합니다.
 
 **효과:** 앱 변경 시 관련 패키지만 재빌드, 빠른 CI 응답
 
-## 구현 중 겪은 고민
+## 🛠️ 구현 중 겪은 고민
 
-### 동시 로그인 경합 방지
+### 🔐 동시 로그인 경합 방지
 
-- MongoDB의 `findOneAndUpdate` 원자 연산으로 로그인 시 `Session` 문서가 userId별로 upsert 됩니다.
-- 두 개의 거의 동시 로그인 시도 중 마지막 연산만 세션에 반영되어, 이전 토큰은 자동 무효화됩니다.
+MongoDB의 `findOneAndUpdate` 원자(atomic) 연산을 사용하여, 로그인할 때 userId별 `Session` 문서를 upsert합니다. 이로써 두 개의 거의 동시 로그인 시도 중 마지막 연산만 세션에 반영되어, 이전 토큰은 자동으로 무효화됩니다.
+
+### 🌐 오토스케일링 환경에서 보상 동시 요청 처리
+
+#### 고유 인덱스의 원자성
+
+MongoDB의 인덱스 제약 조건은 클러스터 전체(replica set)에서 원자적으로 동작합니다.
+
+```js
+RewardRequestSchema.index(
+  { userId: 1, eventId: 1 },
+  {
+    unique: true,
+    partialFilterExpression: { status: { $in: ["pending", "approved"] } },
+  }
+);
+```
+
+위와 같이 인덱스를 설정하면, 어떤 인스턴스에서 먼저 삽입 요청이 들어오더라도 해당 레코드만 생성되고, 이후 요청은 **duplicate key error (E11000)** 가 발생하여 애플리케이션에서 예외 처리할 수 있습니다.
+
+### 서비스 레이어에서의 에러 핸들링
+
+1. 여러 서버에서 거의 동시에 `repo.create(...)`를 호출해도, 첫 번째 호출만 레코드가 생성됩니다.
+2. 두 번째 호출부터는 고유 인덱스 위반으로 **duplicate key error** 발생
+3. 서비스 레이어에서 해당 에러를 잡아 “이미 요청된 이벤트입니다” 라고 응답하면 됩니다.
+
+별도의 락(lock)이나 트랜잭션 없이도 중복 수령 시도를 안전하게 차단할 수 있습니다.
 
 ## 📁 프로젝트 구조
 
@@ -107,64 +132,7 @@ AUTH_PORT=3001
 
 # Event
 EVENT_PORT=3002
-
-
 ```
-
----
-
-## 📦 서비스별 주요 기능 및 엔드포인트
-
-### 1. Gateway Service
-
-- JWT 검증 및 Role 기반 권한 제어
-- Auth, Event 서비스로 프록시 라우팅
-
-| 메서드 | 경로                            | 설명                          |
-| ------ | ------------------------------- | ----------------------------- |
-| POST   | /auth/register                  | 회원가입                      |
-| POST   | /auth/login                     | 로그인 및 JWT 발급            |
-| PATCH  | /auth/users/\:username/role     | 사용자 롤 변경                |
-| GET    | /events                         | 이벤트 목록 조회              |
-| GET    | /events/\:id                    | 이벤트 상세 조회              |
-| POST   | /events                         | 이벤트 생성                   |
-| PATCH  | /events/\:id/status             | 이벤트 상태(활성/비활성) 수정 |
-| GET    | /events/\:id/reward-definitions | 보상 정의 목록 조회           |
-
-### 2. Auth Service
-
-- 사용자 등록, 로그인, 롤 관리
-- JWT 발급 및 검증
-
-| 메서드 | 경로                        | 설명                              |
-| ------ | --------------------------- | --------------------------------- |
-| POST   | /auth/register              | 회원가입                          |
-| POST   | /auth/login                 | 로그인 및 토큰 발급               |
-| PATCH  | /auth/users/\:username/role | 사용자 롤 변경 (ADMIN만)          |
-| GET    | /auth/me                    | 내 정보 조회                      |
-| GET    | /auth/users                 | 전체 사용자 목록 조회 (AUDITOR만) |
-
-### 3. Event Service
-
-- 이벤트 생성·조회·수정·비활성화
-- 보상 정의 등록·조회
-- 유저 보상 요청 처리 및 이력 조회
-
-| 메서드 | 경로                                 | 설명                                                |
-| ------ | ------------------------------------ | --------------------------------------------------- |
-| POST   | /events                              | 이벤트 생성 (ADMIN, OPERATOR)                       |
-| GET    | /events                              | 이벤트 목록 조회                                    |
-| GET    | /events/\:id                         | 이벤트 상세 조회                                    |
-| PATCH  | /events/\:id/deactivate              | 이벤트 비활성화 (ADMIN 전용)                        |
-| POST   | /events/\:eventId/reward-definitions | 보상 정의 일괄 등록                                 |
-| GET    | /events/\:eventId/reward-definitions | 보상 정의 조회                                      |
-| POST   | /rewards                             | 보상 지급 (OPERATOR, ADMIN)                         |
-| GET    | /rewards                             | 보상 지급 내역 조회 (AUDITOR, ADMIN, OPERATOR)      |
-| POST   | /reward-requests                     | 유저 보상 요청 (USER만)                             |
-| GET    | /reward-requests/my                  | 내 보상 요청 이력 조회 (USER)                       |
-| GET    | /reward-requests                     | 전체 보상 요청 이력 조회 (ADMIN, OPERATOR, AUDITOR) |
-
----
 
 ## 🧪 테스트
 

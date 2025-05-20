@@ -1,4 +1,4 @@
-import { Model, Types } from "mongoose";
+import { Model, mongo, Types } from "mongoose";
 import { InjectModel } from "@nestjs/mongoose";
 import { Injectable, ConflictException } from "@nestjs/common";
 import { BaseRepository } from "./base.repository";
@@ -32,12 +32,38 @@ export class RewardRequestRepositoryAdapter
   }
 
   async create(req: RewardRequestZodModel): Promise<string> {
-    const doc = await this.model.create({
-      ...req,
+    const filter = {
       userId: new Types.ObjectId(req.userId),
       eventId: new Types.ObjectId(req.eventId),
-    });
-    return (doc._id as Types.ObjectId).toString();
+    };
+
+    try {
+      const existing = await this.model
+        .findOneAndUpdate(
+          filter,
+          {
+            $setOnInsert: {
+              status: req.status,
+              requestedAt: req.requestedAt,
+            },
+          },
+          { upsert: true, new: false }
+        )
+        .exec();
+
+      // upsert된 문서가 이미 있었다면, existing !== null
+      if (existing) {
+        return existing.id;
+      }
+      const inserted = await this.model.findOne(filter).exec();
+      return inserted!.id;
+    } catch (err) {
+      // MongoDB 중복 키 에러만 잡아서 ConflictException으로 변환
+      if (err instanceof mongo.MongoServerError && err.code === 11000) {
+        throw new ConflictException("이미 요청된 이벤트입니다");
+      }
+      throw err;
+    }
   }
 
   async findByUser(

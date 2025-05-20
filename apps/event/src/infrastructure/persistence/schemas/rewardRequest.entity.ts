@@ -26,8 +26,11 @@ export const RewardRequestSchema =
   SchemaFactory.createForClass(RewardRequestEntity);
 
 RewardRequestSchema.index(
-  { userId: 1, eventId: 1, status: 1 },
-  { unique: false } // 중복 허용은 안 되지만, unique: true로 하면 한 번도 요청 못 하므로 false
+  { userId: 1, eventId: 1 },
+  {
+    unique: true,
+    partialFilterExpression: { status: { $in: ["pending", "approved"] } },
+  }
 );
 
 RewardRequestSchema.set("toJSON", BaseSchemaOptions.toJSON);
