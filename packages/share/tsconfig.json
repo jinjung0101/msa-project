@@ -2,9 +2,15 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "rootDir": "src",
-    "outDir": "dist",
+    "outDir": "../../dist/share",
     "composite": true,
-    "tsBuildInfoFile": "dist/share.tsbuildinfo"
+    "tsBuildInfoFile": "../../dist/share/share.tsbuildinfo",
+    "baseUrl": ".",
+    "paths": {
+      "@my-msa-project/share": ["src/index.ts"],
+      "@my-msa-project/share/*": ["src/*"]
+    }
   },
-  "include": ["src/**/*.ts"]
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules"]
 }

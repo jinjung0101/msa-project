@@ -18,7 +18,9 @@
     "mongoose": "^8.14.3",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
-    "uuid": "^11.1.0"
+    "uuid": "^11.1.0",
+    "@my-msa-project/share": "workspace:*",
+    "@my-msa-project/infrastructure": "workspace:*"
   },
   "devDependencies": {
     "@nestjs/testing": "^11.1.1",

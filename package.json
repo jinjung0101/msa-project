@@ -13,7 +13,8 @@
     "build:event": "tsc -b apps/event",
     "start:event": "node dist/event/main.js",
     "build:share": "tsc -b packages/share",
-    "build": "pnpm run build:share && pnpm run build:gateway && pnpm run build:auth && pnpm run build:event",
+    "build:infrastructure": "tsc -b packages/infrastructure",
+    "build": "pnpm run build:share && pnpm run build:infrastructure && pnpm run build:gateway && pnpm run build:auth && pnpm run build:event",
     "dev:gateway": "ts-node-dev --respawn --transpile-only --project tsconfig.base.json -r tsconfig-paths/register apps/gateway/src/main.ts",
     "dev:auth": "ts-node-dev --respawn --transpile-only --project tsconfig.base.json -r tsconfig-paths/register apps/auth/src/main.ts",
     "dev:event": "ts-node-dev --respawn --transpile-only --project tsconfig.base.json -r tsconfig-paths/register apps/event/src/main.ts"
@@ -38,15 +39,15 @@
     "ts-jest": "^29.3.3",
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
-    "tsconfig-paths": "^4.2.0",
     "typescript": "^5.8.3"
   },
   "dependencies": {
     "@nestjs/common": "^11.1.0",
-    "@nestjs/config": "^2.3.4",
+    "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.1.0",
     "@nestjs/platform-express": "^11.1.0",
     "reflect-metadata": "^0.2.2",
-    "rxjs": "^7.8.2"
+    "rxjs": "^7.8.2",
+    "tsconfig-paths": "^4.2.0"
   }
 }

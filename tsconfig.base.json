@@ -2,9 +2,15 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@my-msa-project/share": ["packages/share/src/index.ts"],
-      "@my-msa-project/share/*": ["packages/share/src/*"],
-      "infrastructure/*": ["packages/infrastructure/src/*"]
+      "@my-msa-project/share": ["dist/share/index.d.ts", "dist/share/index.js"],
+      "@my-msa-project/share/*": ["dist/share/*"],
+
+      "@my-msa-project/infrastructure": [
+        "dist/infrastructure/index.d.ts",
+        "dist/infrastructure/index.js"
+      ],
+      "@my-msa-project/infrastructure/*": ["dist/infrastructure/*"],
+      "infrastructure/*": ["dist/infrastructure/*"]
     },
     "types": ["node", "jest"],
     "composite": true,

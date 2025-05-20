@@ -18,8 +18,9 @@
     "mongoose": "^8.14.3",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
-    "swagger-ui-express": "^4.5.0"
+    "swagger-ui-express": "^4.5.0",
+    "@my-msa-project/share": "workspace:*",
+    "@my-msa-project/infrastructure": "workspace:*"
   },
-  "devDependencies": {
-  }
+  "devDependencies": {}
 }

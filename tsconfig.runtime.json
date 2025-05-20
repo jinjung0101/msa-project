@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "infrastructure/*": [
+        "node_modules/@my-msa-project/infrastructure/dist/*"
+      ],
+      "@my-msa-project/share": [
+        "node_modules/@my-msa-project/share/dist/index.js"
+      ],
+      "@my-msa-project/share/*": ["node_modules/@my-msa-project/share/dist/*"]
+    }
+  }
+}
