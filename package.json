@@ -1,6 +1,9 @@
 {
   "name": "my-msa-project",
   "version": "1.0.0",
+  "engines": {
+    "node": "18.x"
+  },
   "main": "index.js",
   "scripts": {
     "version": "changeset version",
