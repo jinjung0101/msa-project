@@ -25,8 +25,13 @@ FROM node:18-alpine AS auth-runtime
 WORKDIR /app
 
 COPY --from=builder /monorepo/node_modules ./node_modules
-COPY --from=builder /monorepo/dist/share          ./node_modules/@my-msa-project/share/dist
-COPY --from=builder /monorepo/dist/infrastructure  ./node_modules/@my-msa-project/infrastructure/dist
+RUN mkdir -p node_modules/@my-msa-project/share
+COPY --from=builder /monorepo/dist/share/* \
+     node_modules/@my-msa-project/share/
+
+RUN mkdir -p node_modules/@my-msa-project/infrastructure
+COPY --from=builder /monorepo/dist/infrastructure/* \
+     node_modules/@my-msa-project/infrastructure/
 
 RUN mkdir -p dist
 
@@ -42,8 +47,13 @@ FROM node:18-alpine AS event-runtime
 WORKDIR /app
 
 COPY --from=builder /monorepo/node_modules ./node_modules
-COPY --from=builder /monorepo/dist/share          ./node_modules/@my-msa-project/share/dist
-COPY --from=builder /monorepo/dist/infrastructure  ./node_modules/@my-msa-project/infrastructure/dist
+RUN mkdir -p node_modules/@my-msa-project/share
+COPY --from=builder /monorepo/dist/share/* \
+     node_modules/@my-msa-project/share/
+
+RUN mkdir -p node_modules/@my-msa-project/infrastructure
+COPY --from=builder /monorepo/dist/infrastructure/* \
+     node_modules/@my-msa-project/infrastructure/
 
 RUN mkdir -p dist
 COPY --from=builder /monorepo/dist/event/.            ./dist
@@ -58,8 +68,13 @@ FROM node:18-alpine AS gateway-runtime
 WORKDIR /app
 
 COPY --from=builder /monorepo/node_modules ./node_modules
-COPY --from=builder /monorepo/dist/share          ./node_modules/@my-msa-project/share/dist
-COPY --from=builder /monorepo/dist/infrastructure  ./node_modules/@my-msa-project/infrastructure/dist
+RUN mkdir -p node_modules/@my-msa-project/share
+COPY --from=builder /monorepo/dist/share/* \
+     node_modules/@my-msa-project/share/
+
+RUN mkdir -p node_modules/@my-msa-project/infrastructure
+COPY --from=builder /monorepo/dist/infrastructure/* \
+     node_modules/@my-msa-project/infrastructure/
 
 RUN mkdir -p dist
 COPY --from=builder /monorepo/dist/gateway/.            ./dist
