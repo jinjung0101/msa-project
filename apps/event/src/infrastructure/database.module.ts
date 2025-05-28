@@ -1,9 +1,15 @@
 import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
-import { SharedMongooseModule } from "infrastructure/mongoose.module";
-import { ConditionBaseSchema } from "./persistence/schemas/condition/condition.base.entity";
+import { SharedMongooseModule } from "@my-msa-project/infrastructure/mongoose.module";
+import {
+  ConditionBaseEntity,
+  ConditionBaseSchema,
+} from "./persistence/schemas/condition/condition.base.entity";
 import { ConditionDiscriminatorProvider } from "./persistence/schemas/condition/condition.discriminator";
-import { RewardDefinitionBaseSchema } from "./persistence/schemas/reward-definition/reward-definition.base.entity";
+import {
+  RewardDefinitionBaseEntity,
+  RewardDefinitionBaseSchema,
+} from "./persistence/schemas/reward-definition/reward-definition.base.entity";
 import { RewardDefinitionDiscriminatorProvider } from "./persistence/schemas/reward-definition/reward-definition.discriminator";
 import { EventEntity, EventSchema } from "./persistence/schemas/event.entity";
 import {
@@ -23,8 +29,11 @@ import {
   imports: [
     SharedMongooseModule,
     MongooseModule.forFeature([
-      { name: "Condition", schema: ConditionBaseSchema },
-      { name: "RewardDefinition", schema: RewardDefinitionBaseSchema },
+      { name: ConditionBaseEntity.name, schema: ConditionBaseSchema },
+      {
+        name: RewardDefinitionBaseEntity.name,
+        schema: RewardDefinitionBaseSchema,
+      },
       { name: EventEntity.name, schema: EventSchema },
       { name: RewardEntity.name, schema: RewardSchema },
       { name: RewardRequestEntity.name, schema: RewardRequestSchema },

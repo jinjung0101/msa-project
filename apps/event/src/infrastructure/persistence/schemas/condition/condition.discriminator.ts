@@ -1,18 +1,33 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
-import { InjectConnection } from '@nestjs/mongoose';
-import { Connection, Schema } from 'mongoose';
-import { LoginStreakParamsSchema } from './login-streak.params.schema';
-import { InviteFriendsParamsSchema } from './invite-friends.params.schema';
-import { CustomParamsSchema } from './custom.params.schema';
+import { Injectable, OnModuleInit } from "@nestjs/common";
+import { InjectModel } from "@nestjs/mongoose";
+import { Model, Schema } from "mongoose";
+import {
+  ConditionBaseEntity,
+  ConditionBaseDocument,
+} from "./condition.base.entity";
+import { LoginStreakParamsSchema } from "./login-streak.params.schema";
+import { InviteFriendsParamsSchema } from "./invite-friends.params.schema";
+import { CustomParamsSchema } from "./custom.params.schema";
 
 @Injectable()
 export class ConditionDiscriminatorProvider implements OnModuleInit {
-  constructor(@InjectConnection() private conn: Connection) {}
+  constructor(
+    @InjectModel(ConditionBaseEntity.name)
+    private readonly conditionModel: Model<ConditionBaseDocument>
+  ) {}
 
   onModuleInit() {
-    const ConditionModel = this.conn.model('Condition');
-    ConditionModel.discriminator('loginStreak', new Schema({ parameters: LoginStreakParamsSchema.obj }));
-    ConditionModel.discriminator('inviteFriends', new Schema({ parameters: InviteFriendsParamsSchema.obj }));
-    ConditionModel.discriminator('custom',       new Schema({ parameters: CustomParamsSchema.obj }));
+    this.conditionModel.discriminator(
+      "loginStreak",
+      new Schema({ parameters: LoginStreakParamsSchema.obj })
+    );
+    this.conditionModel.discriminator(
+      "inviteFriends",
+      new Schema({ parameters: InviteFriendsParamsSchema.obj })
+    );
+    this.conditionModel.discriminator(
+      "custom",
+      new Schema({ parameters: CustomParamsSchema.obj })
+    );
   }
 }

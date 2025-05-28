@@ -7,7 +7,9 @@ import {
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 
 async function bootstrap() {
-  const app = await NestFactory.create(EventModule, { logger: false });
+  const app = await NestFactory.create(EventModule, {
+    logger: ["log", "warn", "error", "debug"],
+  });
 
   // 1) 커스텀 로거 적용
   app.useLogger(new CustomLoggerService());
