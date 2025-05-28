@@ -1,4 +1,4 @@
-export const LOGIN_LOG_REPOSITORY = Symbol("LOGIN_LOG_REPOSITORY");
+export const LOGIN_LOG_REPOSITORY = "LOGIN_LOG_REPOSITORY";
 
 export interface LoginLogRepositoryPort {
   /**

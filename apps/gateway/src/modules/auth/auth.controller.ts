@@ -19,10 +19,10 @@ import {
 } from "@my-msa-project/share/schemas/auth/user.schema";
 import { AuthService } from "./auth.proxy.service";
 import { AuthGuard } from "@nestjs/passport";
-import { RolesGuard } from "../../../../../packages/share/src/security/roles.guard";
-import { Roles } from "../../../../../packages/share/src/security/roles.decorator";
+import { RolesGuard } from "@my-msa-project/share/security/roles.guard";
+import { Roles } from "@my-msa-project/share/src/security/roles.decorator";
 import { UserRoleEnum } from "@my-msa-project/share/schemas/auth/user-role.schema";
-import { ZodValidationPipe } from "infrastructure/pipes/zod-validation.pipe";
+import { ZodValidationPipe } from "@my-msa-project/infrastructure/pipes/zod-validation.pipe";
 import { ApiBearerAuth } from "@nestjs/swagger";
 
 @Controller("auth")

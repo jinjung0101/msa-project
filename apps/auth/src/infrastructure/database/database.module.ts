@@ -1,6 +1,6 @@
 import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
-import { SharedMongooseModule } from "infrastructure/mongoose.module";
+import { SharedMongooseModule } from "@my-msa-project/infrastructure/mongoose.module";
 import { UserEntity, UserSchema } from "../persistence/schemas/user.entity";
 import {
   SessionDoc,

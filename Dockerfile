@@ -25,17 +25,20 @@ FROM node:18-alpine AS auth-runtime
 WORKDIR /app
 
 COPY --from=builder /monorepo/node_modules ./node_modules
-RUN mkdir -p node_modules/@my-msa-project/share
-COPY --from=builder /monorepo/dist/share/* \
-     node_modules/@my-msa-project/share/
 
-RUN mkdir -p node_modules/@my-msa-project/infrastructure
-COPY --from=builder /monorepo/dist/infrastructure/* \
-     node_modules/@my-msa-project/infrastructure/
+# share 패키지 전체 복사
+COPY --from=builder /monorepo/dist/share \
+     node_modules/@my-msa-project/share
 
-RUN mkdir -p dist
+# infrastructure 패키지 전체 복사
+COPY --from=builder /monorepo/dist/infrastructure \
+     node_modules/@my-msa-project/infrastructure
 
-COPY --from=builder /monorepo/dist/auth/.            ./dist
+# 앱 코드
+COPY --from=builder /monorepo/dist/auth/. ./dist
+
+COPY --from=builder /monorepo/tsconfig.json ./tsconfig.json
+COPY --from=builder /monorepo/tsconfig.base.json ./tsconfig.base.json
 
 ENV NODE_PATH=./dist:./node_modules
 CMD ["node", "-r", "tsconfig-paths/register", "dist/main.js"]
@@ -47,16 +50,22 @@ FROM node:18-alpine AS event-runtime
 WORKDIR /app
 
 COPY --from=builder /monorepo/node_modules ./node_modules
-RUN mkdir -p node_modules/@my-msa-project/share
-COPY --from=builder /monorepo/dist/share/* \
-     node_modules/@my-msa-project/share/
 
-RUN mkdir -p node_modules/@my-msa-project/infrastructure
-COPY --from=builder /monorepo/dist/infrastructure/* \
-     node_modules/@my-msa-project/infrastructure/
+# share 패키지 전체 복사
+COPY --from=builder /monorepo/dist/share \
+     node_modules/@my-msa-project/share
 
-RUN mkdir -p dist
-COPY --from=builder /monorepo/dist/event/.            ./dist
+# infrastructure 패키지 전체 복사
+COPY --from=builder /monorepo/dist/infrastructure \
+     node_modules/@my-msa-project/infrastructure
+
+COPY --from=builder /monorepo/dist/infrastructure ./dist/infrastructure
+
+# 앱 코드
+COPY --from=builder /monorepo/dist/event/. ./dist
+
+COPY --from=builder /monorepo/tsconfig.json ./tsconfig.json
+COPY --from=builder /monorepo/tsconfig.base.json ./tsconfig.base.json
 
 ENV NODE_PATH=./dist:./node_modules
 CMD ["node", "-r", "tsconfig-paths/register", "dist/main.js"]
@@ -68,16 +77,20 @@ FROM node:18-alpine AS gateway-runtime
 WORKDIR /app
 
 COPY --from=builder /monorepo/node_modules ./node_modules
-RUN mkdir -p node_modules/@my-msa-project/share
-COPY --from=builder /monorepo/dist/share/* \
-     node_modules/@my-msa-project/share/
 
-RUN mkdir -p node_modules/@my-msa-project/infrastructure
-COPY --from=builder /monorepo/dist/infrastructure/* \
-     node_modules/@my-msa-project/infrastructure/
+# share 패키지 전체 복사
+COPY --from=builder /monorepo/dist/share \
+     node_modules/@my-msa-project/share
 
-RUN mkdir -p dist
-COPY --from=builder /monorepo/dist/gateway/.            ./dist
+# infrastructure 패키지 전체 복사
+COPY --from=builder /monorepo/dist/infrastructure \
+     node_modules/@my-msa-project/infrastructure
+
+# 앱 코드
+COPY --from=builder /monorepo/dist/gateway/. ./dist
+
+COPY --from=builder /monorepo/tsconfig.json ./tsconfig.json
+COPY --from=builder /monorepo/tsconfig.base.json ./tsconfig.base.json
 
 ENV NODE_PATH=./dist:./node_modules
 CMD ["node", "-r", "tsconfig-paths/register", "dist/main.js"]

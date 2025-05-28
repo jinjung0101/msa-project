@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Param, Patch, Post } from "@nestjs/common";
 import { ApiTags, ApiResponse, ApiBearerAuth, ApiBody } from "@nestjs/swagger";
-import { ZodValidationPipe } from "infrastructure/pipes/zod-validation.pipe";
+import { ZodValidationPipe } from "@my-msa-project/infrastructure/pipes/zod-validation.pipe";
 import { EventService } from "../domain/services/event.service";
 import {
   CreateEventDto,

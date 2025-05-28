@@ -3,7 +3,7 @@ import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { APP_GUARD } from "@nestjs/core";
 import { AuthGuard, PassportModule } from "@nestjs/passport";
-import { RolesGuard } from "../../../packages/share/src/security/roles.guard";
+import { RolesGuard } from "@my-msa-project/share/security/roles.guard";
 import { SharedJwtStrategy } from "@my-msa-project/share/security/base-jwt.strategy";
 
 @Module({

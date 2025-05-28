@@ -2,7 +2,7 @@ import { Controller, Get, Param, Post, Body } from "@nestjs/common";
 import { ApiTags, ApiResponse, ApiBody, ApiParam } from "@nestjs/swagger";
 import { Roles } from "@my-msa-project/share/security/roles.decorator";
 import { UserRoleEnum } from "@my-msa-project/share/schemas/auth/user-role.schema";
-import { ZodValidationPipe } from "infrastructure/pipes/zod-validation.pipe";
+import { ZodValidationPipe } from "@my-msa-project/infrastructure/pipes/zod-validation.pipe";
 import { RewardDefinitionService } from "../domain/services/reward-definition.service";
 import {
   RewardDefinitionZodSchema,

@@ -28,6 +28,7 @@ import { TRANSACTION_MANAGER } from "./domain/ports/transaction-manager.port";
 import { MongooseTransactionManager } from "./infrastructure/persistence/transaction-manager.adapter";
 import { ConditionValidatorService } from "./domain/services/condition-validator.service";
 import { LoginStreakStrategy } from "./domain/strategies/login-streak.strategy";
+import { CONDITION_STRATEGIES } from "./domain/strategies/constants";
 
 @Module({
   imports: [
@@ -63,6 +64,11 @@ import { LoginStreakStrategy } from "./domain/strategies/login-streak.strategy";
     { provide: TRANSACTION_MANAGER, useClass: MongooseTransactionManager },
     ConditionValidatorService,
     LoginStreakStrategy,
+    {
+      provide: CONDITION_STRATEGIES,
+      useFactory: (streak: LoginStreakStrategy) => [streak],
+      inject: [LoginStreakStrategy],
+    },
   ],
 })
 export class EventModule {}

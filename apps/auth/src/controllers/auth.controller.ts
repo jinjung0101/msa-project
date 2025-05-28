@@ -15,7 +15,7 @@ import {
   ApiBearerAuth,
 } from "@nestjs/swagger";
 import { AuthService } from "../domain/services/auth.service";
-import { ZodValidationPipe } from "infrastructure/pipes/zod-validation.pipe";
+import { ZodValidationPipe } from "@my-msa-project/infrastructure/pipes/zod-validation.pipe";
 import {
   LoginUserDto,
   LoginUserSchema,
